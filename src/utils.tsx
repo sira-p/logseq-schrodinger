@@ -19,29 +19,10 @@ var imageTracker = [];
 let allPublicPages;
 let allPublicLinks = [] //list of all exported pages
 
-//Retired function
-//I kept on missing pages?!?!?!
-//Never figured out why
-export async function getAllPublicPages_orig() {
-  errorTracker = [];
-  logseq.DB.q("(page-property public)").then((result) => {
-    const mappedResults = result.map((page) => {
-      return page.name;
-    });
-    for (const x in mappedResults) {
-      if (x != `${mappedResults.length - 1}`) {
-        getBlocksInPage({ page: mappedResults[x] }, false, false);
-      } else {
-        getBlocksInPage({ page: mappedResults[x] }, false, true);
-      }
-    }
-  });
-}
-
 export async function getAllPublicPages() {
   //needs to be both public, and a page (with a name)
   const query =
-    "[:find (pull ?p [*]) :where [?p :block/properties ?pr] [(get ?pr :public) ?t] [(= true ?t)][?p :block/name ?n]]";
+    "[:find (pull ?p [*]) :where [?p :block/name ?n]]";
   allPublicPages = await logseq.DB.datascriptQuery(query);
   allPublicPages = allPublicPages?.flat(); //FIXME is this needed?
 
